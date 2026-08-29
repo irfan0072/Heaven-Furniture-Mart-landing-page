@@ -14,7 +14,7 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('http://localhost:3000'),
+  metadataBase: new URL('https://heaven-furniture-mart.mesperdona348.chatgpt.site'),
   title: 'Heaven Furniture Mart | Bespoke Furniture in Chattogram',
   description:
     'Custom sofas, beds, dining sets, and interior pieces designed and crafted around your space in Chattogram, Bangladesh.',
