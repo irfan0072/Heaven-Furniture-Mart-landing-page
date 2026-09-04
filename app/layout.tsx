@@ -1,20 +1,25 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Manrope } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 
-const serif = Cormorant_Garamond({
+const serif = localFont({
+  src: './fonts/cormorant-garamond-latin.woff2',
   variable: '--font-editorial',
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: '400 600',
+  display: 'swap',
 });
 
-const sans = Manrope({
+const sans = localFont({
+  src: './fonts/manrope-latin.woff2',
   variable: '--font-sans',
-  subsets: ['latin'],
+  weight: '200 800',
+  display: 'swap',
 });
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://heaven-furniture-mart.mesperdona348.chatgpt.site'),
+  metadataBase: new URL(siteUrl),
   title: 'Heaven Furniture Mart | Bespoke Furniture in Chattogram',
   description:
     'Custom sofas, beds, dining sets, and interior pieces designed and crafted around your space in Chattogram, Bangladesh.',

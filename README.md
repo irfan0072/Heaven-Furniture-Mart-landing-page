@@ -17,7 +17,16 @@ Open the local address printed in the terminal.
 
 ```bash
 npm run build
+npm start
 ```
+
+## Deploy on Vercel
+
+1. Import this GitHub repository into Vercel.
+2. Use Node.js 22.13 or newer.
+3. Keep the automatically detected **Next.js** framework preset and `npm run build` command. Leave the output directory blank.
+4. Add `NEXT_PUBLIC_SITE_URL` with the final HTTPS domain, for example `https://your-project.vercel.app`.
+5. Deploy. Future pushes to `main` will create new production deployments automatically.
 
 ## Editing content and imagery
 
