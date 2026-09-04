@@ -1,6 +1,6 @@
-# Heaven Furniture Mart
+# Heaven-Furniture-Mart-landing-page
 
-A single-page, static-export-compatible brand experience for Heaven Furniture Mart in Chattogram.
+A cinematic, bilingual brand experience for Heaven Furniture Mart in Chattogram. The landing page combines responsive editorial storytelling, scroll animation, short-form reels, a practical sofa configurator, and a real interactive 3D furniture model.
 
 ## Run locally
 
@@ -23,12 +23,12 @@ npm run build
 
 Business details, collections, process steps, journey milestones, social links, and media paths are centralized in `lib/content.ts`.
 
-The files in `public/media` are licensed editorial placeholders. Replace them with authentic Heaven Furniture Mart photography using the same filenames, or update the paths in `lib/content.ts`.
+Business details and media paths can be updated in `lib/content.ts`. Local visual assets are stored under `public`.
 
 ## Experience notes
 
-- The hero and bespoke section use lightweight React Three Fiber geometry.
+- The Bespoke Atelier uses a web-optimized CC0 sofa model from Poly Haven. Asset details are recorded beside the model in `public/models/sofa-01/LICENSE.md`.
 - GSAP and ScrollTrigger choreograph the page; Lenis provides restrained smooth scrolling.
 - Motion is disabled or simplified for visitors who prefer reduced motion.
-- Mobile replaces the bespoke 3D transformation with a clear process presentation.
-
+- Bangla and English are supported throughout the complete experience.
+- The layout and 3D presentation adapt across mobile, tablet, laptop, and desktop screens.
