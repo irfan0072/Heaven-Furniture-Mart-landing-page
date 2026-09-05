@@ -1,7 +1,17 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { ArrowUpRight, Check, Copy, Move3D, Ruler, Sofa } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Check,
+  Copy,
+  Move3D,
+  RotateCcw,
+  Ruler,
+  Sofa,
+  ZoomIn,
+  ZoomOut,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/components/language-provider';
 import { siteContent } from '@/lib/content';
@@ -28,8 +38,10 @@ const woods = [
 ];
 
 const firmnessOptions = ['Soft', 'Balanced', 'Supportive'] as const;
-const formatPrice = (value: number) =>
-  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const formatFeetInches = (centimetres: number) => {
+  const totalInches = Math.round(centimetres / 2.54);
+  return `${Math.floor(totalInches / 12)}′ ${totalInches % 12}″`;
+};
 
 export function DesignStudio() {
   const [fabricIndex, setFabricIndex] = useState(0);
@@ -40,6 +52,8 @@ export function DesignStudio() {
     useState<(typeof firmnessOptions)[number]>('Balanced');
   const [copied, setCopied] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
+  const [cameraDistance, setCameraDistance] = useState(6.2);
+  const [viewReset, setViewReset] = useState(0);
   const sceneHost = useRef<HTMLDivElement>(null);
   const { language, text } = useLanguage();
 
@@ -52,11 +66,6 @@ export function DesignStudio() {
       : clearance >= 20
         ? text('Compact fit', 'কমপ্যাক্টভাবে মানানসই')
         : text('More room needed', 'আরও জায়গা প্রয়োজন');
-  const estimate =
-    68000 +
-    (width - 180) * 420 +
-    fabric.premium +
-    (firmness === 'Supportive' ? 6000 : firmness === 'Soft' ? 3000 : 0);
   const fabricName =
     language === 'bn'
       ? ['আইভরি বুকলে', 'ক্যামেল উইভ', 'ফরেস্ট ভেলভেট', 'গ্রাফাইট লিনেন'][fabricIndex]
@@ -68,8 +77,8 @@ export function DesignStudio() {
       ? { Soft: 'নরম', Balanced: 'ভারসাম্যপূর্ণ', Supportive: 'দৃঢ়' }[firmness]
       : firmness;
   const summary = text(
-    `Heaven custom sofa — ${width} cm wide, ${fabricName}, ${woodName} legs, ${firmnessName.toLowerCase()} comfort. Room width: ${roomWidth} cm (${fit.toLowerCase()}). Concept estimate: BDT ${formatPrice(estimate)}–${formatPrice(estimate + 14000)}.`,
-    `হেভেন কাস্টম সোফা — প্রস্থ ${width} সেমি, ${fabricName}, ${woodName} পা, ${firmnessName} আরাম। ঘরের প্রস্থ ${roomWidth} সেমি (${fit})। আনুমানিক মূল্য ৳${formatPrice(estimate)}–${formatPrice(estimate + 14000)}।`,
+    `Heaven custom sofa — ${width} cm wide, ${fabricName}, ${woodName} legs, ${firmnessName.toLowerCase()} comfort. Room width: ${roomWidth} cm (${fit.toLowerCase()}). Please confirm the final design, materials, and quotation.`,
+    `হেভেন কাস্টম সোফা — প্রস্থ ${width} সেমি, ${fabricName}, ${woodName} পা, ${firmnessName} আরাম। ঘরের প্রস্থ ${roomWidth} সেমি (${fit})। চূড়ান্ত ডিজাইন, উপকরণ ও কোটেশন নিশ্চিত করুন।`,
   );
   const whatsapp = `https://wa.me/8801960481983?text=${encodeURIComponent(text(`Hello Heaven Furniture Mart, I designed a sofa on your website. ${summary} I would like a final consultation.`, `হ্যালো হেভেন ফার্নিচার মার্ট, আপনাদের ওয়েবসাইটে আমি একটি সোফা ডিজাইন করেছি। ${summary} আমি চূড়ান্ত পরামর্শ নিতে চাই।`))}`;
   const process =
@@ -137,7 +146,7 @@ export function DesignStudio() {
           <div data-reveal>
             <p className="mb-5 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[.2em] text-[var(--stone)]">
               <span className="h-px w-9 bg-[var(--brass)]" />{' '}
-              {text('The Bespoke Atelier', 'বেসপোক অ্যাটেলিয়ার')}
+              {text('The Bespoke Atelier', 'আপনার পছন্দের সোফা')}
             </p>
             <h2 className="font-editorial max-w-4xl text-[clamp(3.2rem,6.4vw,7.2rem)] leading-[.84] tracking-[-.045em]">
               {text('Made for your ', 'আপনার ঘরের জন্য ')}
@@ -148,8 +157,8 @@ export function DesignStudio() {
           </div>
           <p className="max-w-xl text-base leading-8 text-white/68" data-reveal>
             {text(
-              'Explore a real, artisan-built sofa in 360°, then shape its size, comfort, and finish around your home. Your choices become a clear brief for our craftsmen.',
-              'একটি বাস্তব কারুকার্যময় সোফা ৩৬০° ঘুরিয়ে দেখুন, তারপর আপনার ঘর অনুযায়ী মাপ, আরাম ও ফিনিশ বেছে নিন। আপনার পছন্দগুলো আমাদের কারিগরদের জন্য একটি পরিষ্কার ব্রিফে পরিণত হবে।',
+              'Explore an artisan-built sofa in 360°, check its proportion, and save size, comfort, and finish preferences in a clear brief for our craftsmen.',
+              'কারুকার্যময় সোফাটি ৩৬০° ঘুরিয়ে দেখুন, অনুপাত যাচাই করুন এবং মাপ, আরাম ও ফিনিশের পছন্দ আমাদের কারিগরদের জন্য একটি পরিষ্কার ব্রিফে সংরক্ষণ করুন।',
             )}
           </p>
         </div>
@@ -157,24 +166,65 @@ export function DesignStudio() {
         <div className="grid overflow-hidden border border-white/12 bg-[#0d2524] shadow-[0_35px_100px_rgba(0,0,0,.25)] lg:grid-cols-[1.25fr_.75fr]">
           <div
             ref={sceneHost}
-            className="relative min-h-[430px] overflow-hidden border-b border-white/10 lg:min-h-[720px] lg:border-b-0 lg:border-r"
+            className="relative min-h-[430px] overflow-hidden border-b border-white/10 sm:min-h-[560px] md:min-h-[620px] lg:min-h-[720px] lg:border-b-0 lg:border-r"
           >
-            <div className="absolute left-5 top-5 z-10 flex items-center gap-2 rounded-full border border-white/12 bg-black/25 px-4 py-2 text-xs text-white/78 backdrop-blur-md">
+            <div className="absolute left-3 top-3 z-10 flex min-h-11 items-center gap-2 rounded-full border border-white/12 bg-black/25 px-3 text-xs text-white/78 backdrop-blur-md sm:left-5 sm:top-5 sm:px-4">
               <Move3D size={15} />{' '}
-              {text(
-                'Drag to rotate · Pinch to zoom',
-                'ঘোরাতে ড্র্যাগ · জুম করতে পিঞ্চ',
-              )}
+              <span className="hidden min-[520px]:inline">
+                {text(
+                  'Drag to rotate · Scroll or pinch to zoom',
+                  'ঘোরাতে ড্র্যাগ · স্ক্রল বা পিঞ্চ করে জুম',
+                )}
+              </span>
+            </div>
+            <div className="absolute right-3 top-3 z-20 flex overflow-hidden rounded-full border border-white/14 bg-black/35 text-white backdrop-blur-md sm:right-5 sm:top-5">
+              <button
+                type="button"
+                onClick={() =>
+                  setCameraDistance((value) => Math.max(4.4, value - 0.65))
+                }
+                className="grid size-11 place-items-center border-r border-white/12 transition hover:bg-white/10"
+                aria-label={text('Zoom in on sofa', 'সোফা জুম ইন করুন')}
+                title={text('Zoom in', 'জুম ইন')}
+              >
+                <ZoomIn size={17} />
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setCameraDistance((value) => Math.min(8.4, value + 0.65))
+                }
+                className="grid size-11 place-items-center border-r border-white/12 transition hover:bg-white/10"
+                aria-label={text('Zoom out from sofa', 'সোফা জুম আউট করুন')}
+                title={text('Zoom out', 'জুম আউট')}
+              >
+                <ZoomOut size={17} />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCameraDistance(6.2);
+                  setViewReset((value) => value + 1);
+                }}
+                className="grid size-11 place-items-center transition hover:bg-white/10"
+                aria-label={text('Reset sofa view', 'সোফার ভিউ রিসেট করুন')}
+                title={text('Reset view', 'ভিউ রিসেট')}
+              >
+                <RotateCcw size={17} />
+              </button>
             </div>
             <div className="pointer-events-none absolute inset-x-5 bottom-5 z-10 flex items-end justify-between gap-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[var(--brass)]">
-                  {text('Real 3D reference', 'বাস্তব ৩ডি রেফারেন্স')}
+                  {text(
+                    'Interactive 3D size preview',
+                    'ইন্টারঅ্যাক্টিভ ৩ডি সাইজ প্রিভিউ',
+                  )}
                 </p>
                 <p className="mt-1 max-w-xs text-xs leading-5 text-white/50">
                   {text(
-                    'Finish choices are confirmed against physical samples.',
-                    'ফিনিশ সরাসরি ম্যাটেরিয়াল স্যাম্পলের সাথে মিলিয়ে নিশ্চিত করা হয়।',
+                    'Preview colours and proportion here, then confirm the final finish against physical samples before production.',
+                    'এখানে রঙ ও অনুপাত প্রিভিউ করুন, তারপর তৈরির আগে সরাসরি ম্যাটেরিয়াল স্যাম্পলের সাথে চূড়ান্ত ফিনিশ নিশ্চিত করুন।',
                   )}
                 </p>
               </div>
@@ -184,14 +234,18 @@ export function DesignStudio() {
             </div>
             {sceneReady ? (
               <ConfiguratorScene
-                widthScale={width / 220}
+                widthScale={1 + (width - 220) / 500}
+                fabricColor={fabric.color}
+                woodColor={wood.color}
+                cameraDistance={cameraDistance}
+                resetKey={viewReset}
                 label={text(
                   'Interactive three-dimensional artisan sofa preview',
                   'ইন্টারঅ্যাক্টিভ ত্রিমাত্রিক কারুকার্যময় সোফার প্রিভিউ',
                 )}
               />
             ) : (
-              <div className="grid h-full min-h-[430px] place-items-center text-center text-white/55 lg:min-h-[720px]">
+              <div className="grid h-full min-h-[430px] place-items-center text-center text-white/55 sm:min-h-[560px] md:min-h-[620px] lg:min-h-[720px]">
                 <div>
                   <Sofa
                     className="mx-auto mb-3 text-[var(--brass)]"
@@ -225,7 +279,7 @@ export function DesignStudio() {
 
             <fieldset className="mt-7">
               <legend className="text-sm font-bold">
-                {text('Choose fabric colour', 'কাপড়ের রং বেছে নিন')}
+                {text('Save fabric preference', 'কাপড়ের পছন্দ সংরক্ষণ করুন')}
               </legend>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {fabrics.map((option, index) => (
@@ -255,7 +309,7 @@ export function DesignStudio() {
 
             <fieldset className="mt-7">
               <legend className="text-sm font-bold">
-                {text('Choose leg wood', 'পায়ার কাঠ বেছে নিন')}
+                {text('Save wood preference', 'কাঠের পছন্দ সংরক্ষণ করুন')}
               </legend>
               <div className="mt-3 flex gap-3">
                 {woods.map((option, index) => (
@@ -283,7 +337,7 @@ export function DesignStudio() {
               <label className="text-sm font-bold">
                 {text('Sofa width', 'সোফার প্রস্থ')}{' '}
                 <span className="float-right font-normal text-[var(--brown)]/60">
-                  {width} {text('cm', 'সেমি')}
+                  {width} {text('cm', 'সেমি')} · {formatFeetInches(width)}
                 </span>
                 <input
                   aria-label={text(
@@ -302,7 +356,8 @@ export function DesignStudio() {
               <label className="text-sm font-bold">
                 {text('Room width', 'ঘরের প্রস্থ')}{' '}
                 <span className="float-right font-normal text-[var(--brown)]/60">
-                  {roomWidth} {text('cm', 'সেমি')}
+                  {roomWidth} {text('cm', 'সেমি')} ·{' '}
+                  {formatFeetInches(roomWidth)}
                 </span>
                 <input
                   aria-label={text(
@@ -345,6 +400,9 @@ export function DesignStudio() {
                     </span>
                     <span className="mt-0.5 block font-normal text-[var(--brown)]/55">
                       {preset.width} {text('cm', 'সেমি')}
+                      <span className="block">
+                        {formatFeetInches(preset.width)}
+                      </span>
                     </span>
                   </button>
                 ))}
@@ -414,15 +472,15 @@ export function DesignStudio() {
 
             <div className="mt-auto pt-7">
               <p className="text-xs uppercase tracking-[.15em] text-[var(--brown)]/52">
-                {text('Estimated price', 'আনুমানিক মূল্য')}
+                {text('Your quotation', 'আপনার কোটেশন')}
               </p>
               <p className="mt-1 font-editorial text-3xl">
-                ৳{formatPrice(estimate)}–{formatPrice(estimate + 14000)}
+                {text('Confirmed personally', 'সরাসরি নিশ্চিত করা হবে')}
               </p>
               <p className="mt-2 text-xs leading-5 text-[var(--brown)]/55">
                 {text(
-                  'Final pricing follows an in-person measurement and material confirmation.',
-                  'সরাসরি মাপ নেওয়া ও উপকরণ নিশ্চিত করার পর চূড়ান্ত মূল্য নির্ধারিত হবে।',
+                  'Our team confirms pricing after reviewing your measurements, materials, comfort preference, and delivery requirements.',
+                  'আপনার মাপ, উপকরণ, আরামের পছন্দ ও ডেলিভারির প্রয়োজন দেখে আমাদের টিম মূল্য নিশ্চিত করবে।',
                 )}
               </p>
               <div className="mt-5 grid gap-2 sm:grid-cols-[1fr_auto]">

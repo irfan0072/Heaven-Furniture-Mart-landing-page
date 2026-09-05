@@ -16,23 +16,23 @@ export const siteContent = {
   collections: [
     {
       title: 'Living Room',
-      copy: 'Sofas, coffee tables, TV units, and consoles.',
-      image: '/media/living-room.webp',
+      copy: 'Signature sofa sets shaped for gathering, comfort, and everyday life.',
+      image: '/media/heaven-living.webp',
     },
     {
       title: 'Bedroom',
-      copy: 'Beds, wardrobes, dressing tables, and bedside tables.',
-      image: '/media/bedroom.webp',
+      copy: 'Statement beds and coordinated pieces designed around calm.',
+      image: '/media/heaven-bedroom.webp',
     },
     {
       title: 'Dining',
-      copy: 'Dining tables, chairs, and cabinets.',
-      image: '/media/dining.webp',
+      copy: 'Dining sets made for family meals, hosting, and celebration.',
+      image: '/media/heaven-dining.webp',
     },
     {
-      title: 'Office & Study',
-      copy: 'Executive tables, bookshelves, and workstations.',
-      image: '/media/detail.webp',
+      title: 'Showcase & Storage',
+      copy: 'Display and storage pieces that bring order without losing character.',
+      image: '/media/heaven-showcase.webp',
     },
   ],
   process: [
@@ -63,7 +63,7 @@ export const siteContent = {
     'Premium wood and materials',
     'Skilled in-house craftsmanship',
     'Large physical showroom in Agrabad',
-    'Delivery and installation included',
+    'Delivery and installation support',
     'Easy payment options',
     'Trusted by hundreds of happy homeowners',
   ],

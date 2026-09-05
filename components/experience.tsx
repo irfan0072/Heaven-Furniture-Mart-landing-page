@@ -31,21 +31,28 @@ export function Experience({ children }: { children: React.ReactNode }) {
       gsap.ticker.lagSmoothing(0);
 
       const context = gsap.context(() => {
-        const heroIntro = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        const heroIntro = gsap.timeline({
+          defaults: { ease: 'power3.out' },
+          delay: 0.42,
+        });
         heroIntro
-          .from('.hero-header', { y: -20, opacity: 0, duration: 0.7 })
-          .from('.hero-eyebrow', { y: 18, opacity: 0, duration: 0.65 }, '-=.3')
+          .from('.hero-visual', {
+            clipPath: 'inset(7% 7% 7% 7%)',
+            scale: 1.07,
+            duration: 1.15,
+          })
+          .from('.hero-header', { y: -20, opacity: 0, duration: 0.7 }, '-=.92')
+          .from('.hero-eyebrow', { y: 18, opacity: 0, duration: 0.65 }, '-=.5')
           .from(
             '.hero-line',
             { yPercent: 105, opacity: 0, duration: 0.95, stagger: 0.1 },
             '-=.35',
           )
           .from('.hero-summary', { y: 20, opacity: 0, duration: 0.7 }, '-=.55')
-          .from('.hero-actions', { y: 18, opacity: 0, duration: 0.65 }, '-=.48')
           .from(
-            '.hero-visual',
-            { xPercent: 4, opacity: 0, duration: 1.15 },
-            '-=.9',
+            '.hero-actions',
+            { y: 18, opacity: 0, duration: 0.65 },
+            '-=.48',
           );
 
         gsap.to('.hero-copy', {
@@ -59,9 +66,9 @@ export function Experience({ children }: { children: React.ReactNode }) {
             scrub: true,
           },
         });
-        gsap.to('.hero-visual', {
-          yPercent: 9,
-          rotateX: -2,
+        gsap.to('.hero-product-image', {
+          yPercent: 6,
+          scale: 1.045,
           ease: 'none',
           scrollTrigger: {
             trigger: '#top',
@@ -71,25 +78,104 @@ export function Experience({ children }: { children: React.ReactNode }) {
           },
         });
 
-        gsap.utils
-          .toArray<HTMLElement>('[data-layer-stage]')
-          .forEach((stage) => {
-            gsap.fromTo(
-              stage,
-              { rotateY: -7, rotateX: 2 },
-              {
-                rotateY: 7,
-                rotateX: -2,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: stage,
-                  start: 'top bottom',
-                  end: 'bottom top',
-                  scrub: 0.8,
-                },
-              },
-            );
-          });
+        gsap
+          .matchMedia()
+          .add(
+            '(min-width: 1024px) and (min-height: 900px) and (prefers-reduced-motion: no-preference)',
+            () => {
+              gsap.utils
+                .toArray<HTMLElement>('[data-material-story]')
+                .forEach((story) => {
+                  const stage =
+                    story.querySelector<HTMLElement>('[data-layer-stage]');
+                  const shells = gsap.utils
+                    .toArray<HTMLElement>('[data-material-layer-shell]', story)
+                    .sort(
+                      (a, b) =>
+                        Number(a.dataset.materialLayerShell) -
+                        Number(b.dataset.materialLayerShell),
+                    );
+                  const steps = gsap.utils
+                    .toArray<HTMLElement>('[data-material-step]', story)
+                    .sort(
+                      (a, b) =>
+                        Number(a.dataset.materialStep) -
+                        Number(b.dataset.materialStep),
+                    );
+                  if (!stage || shells.length === 0) return;
+
+                  gsap.set(shells, {
+                    y: 95,
+                    scale: 0.86,
+                    opacity: 0,
+                    filter: 'blur(9px)',
+                  });
+                  gsap.set(steps, { backgroundColor: 'transparent' });
+                  gsap.set(shells[0], {
+                    y: 0,
+                    scale: 1,
+                    opacity: 1,
+                    filter: 'blur(0px)',
+                  });
+                  gsap.set(steps[0], {
+                    backgroundColor: 'rgba(255,255,255,0.4)',
+                  });
+
+                  const materialTimeline = gsap.timeline({
+                    scrollTrigger: {
+                      trigger: story,
+                      start: 'top top',
+                      end: 'bottom bottom',
+                      scrub: 0.65,
+                    },
+                  });
+
+                  shells.slice(1).forEach((shell, offset) => {
+                    const index = offset + 1;
+                    const position = 0.55 + offset * 1.15;
+                    materialTimeline.to(
+                      steps[index - 1],
+                      { backgroundColor: 'transparent', duration: 0.22 },
+                      position,
+                    );
+                    materialTimeline
+                      .to(
+                        shell,
+                        {
+                          y: 0,
+                          scale: 1,
+                          opacity: 1,
+                          filter: 'blur(0px)',
+                          duration: 0.82,
+                          ease: 'power3.out',
+                        },
+                        position,
+                      )
+                      .to(
+                        steps[index],
+                        {
+                          backgroundColor: 'rgba(255,255,255,0.4)',
+                          duration: 0.28,
+                          ease: 'power2.out',
+                        },
+                        position + 0.12,
+                      );
+                  });
+
+                  materialTimeline.to(
+                    stage,
+                    {
+                      rotateY: 5,
+                      rotateX: -2,
+                      scale: 1.025,
+                      duration: 0.85,
+                      ease: 'sine.inOut',
+                    },
+                    3.35,
+                  );
+                });
+            },
+          );
 
         gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((element) => {
           gsap.fromTo(

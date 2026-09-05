@@ -63,15 +63,15 @@ export function LandingPage() {
     ...item,
     title:
       language === 'bn'
-        ? ['লিভিং রুম', 'বেডরুম', 'ডাইনিং', 'অফিস ও স্টাডি'][index]
+        ? ['লিভিং রুম', 'বেডরুম', 'ডাইনিং', 'শোকেস ও স্টোরেজ'][index]
         : item.title,
     copy:
       language === 'bn'
         ? [
-            'সোফা, কফি টেবিল, টিভি ইউনিট ও কনসোল।',
-            'বেড, ওয়ারড্রোব, ড্রেসিং টেবিল ও বেডসাইড টেবিল।',
-            'ডাইনিং টেবিল, চেয়ার ও ক্যাবিনেট।',
-            'এক্সিকিউটিভ টেবিল, বুকশেলফ ও ওয়ার্কস্টেশন।',
+            'একসঙ্গে বসা, আরাম ও প্রতিদিনের জীবনের জন্য তৈরি সিগনেচার সোফা সেট।',
+            'শান্ত ও পরিপাটি ঘরের জন্য স্টেটমেন্ট বেড ও সমন্বিত আসবাব।',
+            'পরিবার, অতিথি ও আনন্দের মুহূর্তের জন্য তৈরি ডাইনিং সেট।',
+            'গুছিয়ে রাখা ও সুন্দরভাবে প্রদর্শনের জন্য বৈশিষ্ট্যময় আসবাব।',
           ][index]
         : item.copy,
   }));
@@ -83,11 +83,47 @@ export function LandingPage() {
           'প্রিমিয়াম কাঠ ও উপকরণ',
           'দক্ষ নিজস্ব কারিগর',
           'আগ্রাবাদে বড় শোরুম',
-          'ডেলিভারি ও ইনস্টলেশন অন্তর্ভুক্ত',
+          'ডেলিভারি ও ইনস্টলেশন সহায়তা',
           'সহজ পেমেন্ট সুবিধা',
           'শত শত সন্তুষ্ট বাড়ির মালিকের আস্থা',
         ]
       : siteContent.trust;
+  const clientPromises =
+    language === 'bn'
+      ? [
+          {
+            label: 'পরামর্শ',
+            title: 'আগে আপনার প্রয়োজন বুঝি।',
+            copy: 'ঘরের মাপ, ব্যবহার ও পছন্দ বুঝে উপযুক্ত আসবাব ও ফিনিশ বেছে নিতে সহায়তা করা হয়।',
+          },
+          {
+            label: 'কাস্টমাইজেশন',
+            title: 'আপনার ঘরের জন্যই তৈরি।',
+            copy: 'মাপ, উপকরণ, রঙ ও ডিটেইল এমনভাবে নির্ধারণ করা যায়, যাতে আসবাবটি জায়গার সঙ্গে মানিয়ে যায়।',
+          },
+          {
+            label: 'সহায়তা',
+            title: 'নির্বাচনের পরও পাশে।',
+            copy: 'অর্ডার থেকে ডেলিভারি ও ইনস্টলেশন—প্রতিটি ধাপে স্পষ্ট সহায়তা পাওয়ার ব্যবস্থা রয়েছে।',
+          },
+        ]
+      : [
+          {
+            label: 'Consultation',
+            title: 'Your needs come first.',
+            copy: 'Room dimensions, daily use, and personal taste guide every recommendation for form and finish.',
+          },
+          {
+            label: 'Customisation',
+            title: 'Made around your room.',
+            copy: 'Dimensions, materials, colour, and details can be considered together so the piece belongs in its space.',
+          },
+          {
+            label: 'Support',
+            title: 'Help beyond selection.',
+            copy: 'The team supports the journey from order through delivery and installation.',
+          },
+        ];
   const timeline =
     language === 'bn'
       ? [
@@ -130,13 +166,7 @@ export function LandingPage() {
   return (
     <Experience>
       <div className="overflow-clip">
-        <output
-          className="welcome-preloader"
-          aria-label={text(
-            'Welcome to Heaven Furniture Mart',
-            'হেভেন ফার্নিচার মার্টে স্বাগতম',
-          )}
-        >
+        <div className="welcome-preloader" aria-hidden="true">
           <div className="welcome-preloader__mark" aria-hidden="true">
             H
           </div>
@@ -147,7 +177,7 @@ export function LandingPage() {
             Welcome · স্বাগতম
           </p>
           <span className="welcome-preloader__line" aria-hidden="true" />
-        </output>
+        </div>
 
         <a
           href="#main-content"
@@ -158,6 +188,7 @@ export function LandingPage() {
 
         <div
           aria-hidden={!navVisible}
+          inert={!navVisible}
           className={`fixed inset-x-0 top-0 z-40 border-b border-white/10 bg-[var(--teal)]/96 text-white backdrop-blur-xl transition-all duration-500 ${navVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0'}`}
         >
           <div className="mx-auto flex h-16 max-w-[1480px] items-center justify-between px-5 sm:px-8 lg:px-14">
@@ -173,7 +204,7 @@ export function LandingPage() {
             >
               <a href="#about">{text('About', 'আমাদের সম্পর্কে')}</a>
               <a href="#collections">{text('Collections', 'কালেকশন')}</a>
-              <a href="#reels">{text('Reels', 'রিলস')}</a>
+              <a href="#reels">{text('Stories', 'গল্প')}</a>
               <a href="#bespoke">{text('Bespoke', 'কাস্টম ডিজাইন')}</a>
               <a href="#why-heaven">{text('Why Heaven', 'কেন হেভেন')}</a>
               <a href="#showroom">{text('Showroom', 'শোরুম')}</a>
@@ -213,7 +244,7 @@ export function LandingPage() {
               {[
                 [text('About', 'আমাদের সম্পর্কে'), '#about'],
                 [text('Collections', 'কালেকশন'), '#collections'],
-                [text('Reels', 'রিলস'), '#reels'],
+                [text('Stories', 'গল্প'), '#reels'],
                 [text('Design your sofa', 'সোফা ডিজাইন করুন'), '#bespoke'],
                 [text('Why Heaven', 'কেন হেভেন'), '#why-heaven'],
                 [text('Visit showroom', 'শোরুমে আসুন'), '#showroom'],
@@ -235,10 +266,10 @@ export function LandingPage() {
 
         <Hero />
 
-        <div id="main-content">
+        <main id="main-content" tabIndex={-1}>
           <section
             id="about"
-            className="relative bg-[var(--ivory)] px-5 py-20 sm:px-8 lg:px-14 lg:py-44"
+            className="relative bg-[var(--ivory)] px-5 py-16 sm:px-8 sm:py-24 lg:px-14 lg:py-36"
           >
             <div className="mx-auto grid max-w-[1380px] items-center gap-14 lg:grid-cols-[.92fr_1.08fr] lg:gap-24">
               <div data-reveal>
@@ -259,7 +290,7 @@ export function LandingPage() {
                 </p>
               </div>
               <figure
-                className="relative min-h-[420px] overflow-hidden bg-[var(--stone)] sm:min-h-[620px]"
+                className="relative min-h-[360px] overflow-hidden bg-[var(--stone)] sm:min-h-[560px]"
                 data-image
               >
                 <img
@@ -278,7 +309,7 @@ export function LandingPage() {
 
           <section
             id="collections"
-            className="bg-[#ebe4d8] px-5 py-20 sm:px-8 lg:px-14 lg:py-40"
+            className="bg-[#ebe4d8] px-5 py-16 sm:px-8 sm:py-24 lg:px-14 lg:py-32"
           >
             <div className="mx-auto max-w-[1480px]">
               <div
@@ -301,16 +332,31 @@ export function LandingPage() {
                   )}
                 </p>
               </div>
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="collections-rail -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 sm:-mx-8 sm:px-8 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0">
                 {collections.map((collection, index) => (
-                  <article
+                  <a
                     key={collection.title}
-                    className={`group relative min-h-[460px] overflow-hidden bg-[var(--teal)] sm:min-h-[520px] ${index === 0 || index === 3 ? 'lg:min-h-[640px]' : 'lg:min-h-[510px]'}`}
+                    href={`https://wa.me/8801960481983?text=${encodeURIComponent(
+                      text(
+                        `Hello Heaven Furniture Mart, I would like to know more about the ${collection.title} collection.`,
+                        `হ্যালো হেভেন ফার্নিচার মার্ট, আমি ${collection.title} কালেকশন সম্পর্কে আরও জানতে চাই।`,
+                      ),
+                    )}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={text(
+                      `Ask about the ${collection.title} collection on WhatsApp`,
+                      `${collection.title} কালেকশন সম্পর্কে WhatsApp-এ জানুন`,
+                    )}
+                    className={`group relative min-h-[430px] w-[84vw] max-w-[430px] shrink-0 snap-center overflow-hidden bg-[var(--teal)] sm:min-h-[500px] sm:w-[58vw] md:w-auto md:max-w-none ${index === 0 || index === 3 ? 'lg:min-h-[590px]' : 'lg:min-h-[480px]'}`}
                     data-reveal
                   >
                     <img
                       src={collection.image}
-                      alt={`${collection.title} furniture collection`}
+                      alt={text(
+                        `${collection.title} furniture collection`,
+                        `${collection.title} ফার্নিচার কালেকশন`,
+                      )}
                       loading="lazy"
                       decoding="async"
                       className="absolute inset-0 h-full w-full object-cover opacity-80 transition duration-1000 group-hover:scale-[1.035] group-hover:opacity-65"
@@ -330,9 +376,15 @@ export function LandingPage() {
                       </div>
                       <ArrowUpRight className="mb-2 transition-transform duration-500 group-hover:-translate-y-2 group-hover:translate-x-2" />
                     </div>
-                  </article>
+                  </a>
                 ))}
               </div>
+              <p className="mt-3 text-center text-[10px] font-bold uppercase tracking-[.15em] text-[var(--brown)]/68 md:hidden">
+                {text(
+                  'Swipe to explore · Tap to enquire',
+                  'দেখতে সোয়াইপ করুন · জানতে ট্যাপ করুন',
+                )}
+              </p>
             </div>
           </section>
 
@@ -344,7 +396,7 @@ export function LandingPage() {
 
           <section
             id="why-heaven"
-            className="bg-[var(--ivory)] px-5 py-20 sm:px-8 lg:px-14 lg:py-44"
+            className="bg-[var(--ivory)] px-5 py-16 sm:px-8 sm:py-24 lg:px-14 lg:py-36"
           >
             <div className="mx-auto max-w-[1380px]">
               <div className="grid gap-10 lg:grid-cols-2 lg:gap-28">
@@ -361,7 +413,7 @@ export function LandingPage() {
                   {trust.map((point) => (
                     <div
                       key={point}
-                      className="flex min-h-28 gap-4 border-b border-[var(--teal)]/15 py-6 sm:px-5"
+                      className="flex min-h-20 gap-4 border-b border-[var(--teal)]/15 py-4 sm:px-5"
                       data-reveal
                     >
                       <Check
@@ -377,7 +429,7 @@ export function LandingPage() {
                 </div>
               </div>
 
-              <div className="mt-20 space-y-20 lg:mt-28 lg:space-y-24">
+              <div className="mt-14 space-y-14 sm:mt-20 sm:space-y-20 lg:mt-24 lg:space-y-24">
                 {localizedCraft.map((detail, index) => (
                   <article
                     key={detail.title}
@@ -452,6 +504,49 @@ export function LandingPage() {
                   )}
                 </p>
               </blockquote>
+            </div>
+            <div className="mx-auto mt-16 max-w-[1380px] sm:mt-20">
+              <div
+                className="grid gap-6 border-b border-[var(--teal)]/14 pb-8 md:grid-cols-[1fr_.8fr] md:items-end"
+                data-reveal
+              >
+                <div>
+                  <Eyebrow>
+                    {text('The client experience', 'গ্রাহকের অভিজ্ঞতা')}
+                  </Eyebrow>
+                  <h2 className="font-editorial max-w-3xl text-[clamp(2.7rem,5vw,5.8rem)] leading-[.9] tracking-[-.04em]">
+                    {text('Care you can expect.', 'যে যত্ন আপনি আশা করতে পারেন।')}
+                  </h2>
+                </div>
+                <p className="max-w-lg text-sm leading-7 text-[var(--brown)]/68 md:justify-self-end">
+                  {text(
+                    'Clear guidance, considered customisation, and practical support—before a piece reaches your home.',
+                    'স্পষ্ট পরামর্শ, যত্নশীল কাস্টমাইজেশন ও ব্যবহারিক সহায়তা—আসবাব আপনার ঘরে পৌঁছানোর আগেই।',
+                  )}
+                </p>
+              </div>
+              <div className="grid md:grid-cols-3">
+                {clientPromises.map((item, index) => (
+                  <article
+                    key={item.label}
+                    className="border-b border-[var(--teal)]/14 py-9 md:border-b-0 md:border-r md:px-8 md:py-12 md:first:pl-0 md:last:border-r-0 md:last:pr-0"
+                    data-reveal
+                  >
+                    <span className="grid size-10 place-items-center rounded-full border border-[var(--teal)]/18 text-sm font-bold text-[var(--brass-dark)]">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <p className="mt-7 text-xs font-extrabold uppercase tracking-[.18em] text-[var(--brown)]/55">
+                      {item.label}
+                    </p>
+                    <h3 className="mt-3 font-editorial text-[clamp(2rem,2.8vw,3rem)] leading-[1.02] tracking-[-.025em]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-5 max-w-sm text-sm leading-7 text-[var(--brown)]/68">
+                      {item.copy}
+                    </p>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
 
@@ -613,7 +708,7 @@ export function LandingPage() {
               </div>
             </div>
           </section>
-        </div>
+        </main>
 
         <footer className="bg-[#061817] px-5 pb-28 pt-20 text-white sm:px-8 lg:px-14 lg:pb-12">
           <div className="mx-auto max-w-[1380px]">
@@ -689,7 +784,7 @@ export function LandingPage() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-5 pt-7 text-[10px] uppercase tracking-[.12em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-5 pt-7 text-[10px] uppercase tracking-[.12em] text-white/65 sm:flex-row sm:items-center sm:justify-between">
               <p>
                 © {new Date().getFullYear()} Heaven Furniture Mart.{' '}
                 {text('All rights reserved.', 'সর্বস্বত্ব সংরক্ষিত।')}
@@ -705,22 +800,39 @@ export function LandingPage() {
         </footer>
 
         {navVisible && (
-          <div className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 gap-2 border-t border-[var(--teal)]/10 bg-[var(--ivory)]/96 p-2 pb-[max(.5rem,env(safe-area-inset-bottom))] shadow-[0_-10px_35px_rgba(0,0,0,.12)] backdrop-blur-xl md:hidden">
-            <a
-              href="tel:+8801960481983"
-              className="inline-flex min-h-12 items-center justify-center gap-2 border border-[var(--teal)]/15 text-sm font-bold text-[var(--teal)]"
-            >
-              <Phone size={17} /> {text('Call us', 'ফোন করুন')}
-            </a>
+          <>
+            <div className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 gap-2 border-t border-[var(--teal)]/10 bg-[var(--ivory)]/96 p-2 pb-[max(.5rem,env(safe-area-inset-bottom))] shadow-[0_-10px_35px_rgba(0,0,0,.12)] backdrop-blur-xl md:hidden">
+              <a
+                href="tel:+8801960481983"
+                className="inline-flex min-h-12 items-center justify-center gap-2 border border-[var(--teal)]/15 text-sm font-bold text-[var(--teal)]"
+              >
+                <Phone size={17} /> {text('Call us', 'ফোন করুন')}
+              </a>
+              <a
+                href={siteContent.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#1f7a50] text-sm font-bold text-white"
+              >
+                <MessageCircle size={18} /> WhatsApp
+              </a>
+            </div>
             <a
               href={siteContent.whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#1f7a50] text-sm font-bold text-white"
+              aria-label={text(
+                'Chat with Heaven Furniture Mart on WhatsApp',
+                'WhatsApp-এ হেভেন ফার্নিচার মার্টের সঙ্গে কথা বলুন',
+              )}
+              className="group fixed bottom-6 right-6 z-50 hidden min-h-14 items-center gap-3 rounded-full bg-[#1f7a50] px-5 text-sm font-bold text-white shadow-[0_16px_45px_rgba(13,64,42,.35)] transition duration-300 hover:-translate-y-1 hover:bg-[#176640] md:inline-flex"
             >
-              <MessageCircle size={18} /> WhatsApp
+              <span className="grid size-8 place-items-center rounded-full bg-white/12">
+                <MessageCircle size={19} />
+              </span>
+              <span>{text('Chat on WhatsApp', 'WhatsApp-এ কথা বলুন')}</span>
             </a>
-          </div>
+          </>
         )}
       </div>
     </Experience>

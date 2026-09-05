@@ -16,6 +16,17 @@ const sans = localFont({
   display: 'swap',
 });
 
+const bengali = localFont({
+  src: [
+    { path: './fonts/noto-sans-bengali-regular.ttf', weight: '400' },
+    { path: './fonts/noto-sans-bengali-bold.ttf', weight: '700' },
+  ],
+  variable: '--font-bengali',
+  display: 'swap',
+  preload: false,
+  adjustFontFallback: false,
+});
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
 export const metadata: Metadata = {
@@ -31,16 +42,24 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Furniture, Crafted Around You. | Heaven Furniture Mart',
-    description: 'Bespoke furniture designed around your space, lifestyle, and taste in Chattogram.',
+    description:
+      'Bespoke furniture designed around your space, lifestyle, and taste in Chattogram.',
     type: 'website',
     locale: 'en_BD',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Heaven Furniture Mart — Furniture, Crafted Around You.' }],
+    images: [
+      {
+        url: '/og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Heaven Furniture Mart — Furniture, Crafted Around You.',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Furniture, Crafted Around You. | Heaven Furniture Mart',
     description: 'Bespoke furniture in Chattogram.',
-    images: ['/og.png'],
+    images: ['/og.jpg'],
   },
 };
 
@@ -48,7 +67,8 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'FurnitureStore',
   name: 'Heaven Furniture Mart',
-  description: 'Luxury bespoke furniture and interior styling in Chattogram, Bangladesh.',
+  description:
+    'Luxury bespoke furniture and interior styling in Chattogram, Bangladesh.',
   foundingDate: '2020',
   founder: { '@type': 'Person', name: 'Abul Kalam Bhuiyan' },
   telephone: '+8801960481983',
@@ -66,10 +86,14 @@ const structuredData = {
   ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${serif.variable} ${sans.variable}`}>
+      <body
+        className={`${serif.variable} ${sans.variable} ${bengali.variable}`}
+      >
         {children}
         <script
           type="application/ld+json"

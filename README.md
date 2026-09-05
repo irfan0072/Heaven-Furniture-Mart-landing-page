@@ -1,6 +1,6 @@
 # Heaven-Furniture-Mart-landing-page
 
-A cinematic, bilingual brand experience for Heaven Furniture Mart in Chattogram. The landing page combines responsive editorial storytelling, scroll animation, short-form reels, a practical sofa configurator, and a real interactive 3D furniture model.
+A cinematic, bilingual brand experience for Heaven Furniture Mart in Chattogram. The landing page combines responsive editorial storytelling, scroll animation, animated visual stories, a practical sofa design brief, and a real interactive 3D furniture model.
 
 ## Run locally
 

@@ -28,6 +28,10 @@ yarn-error.log*
 # local environment
 .env*
 
+# local coding-assistant instructions
+/AGENTS.md
+/CLAUDE.md
+
 # deployment
 .vercel
 .wrangler/
