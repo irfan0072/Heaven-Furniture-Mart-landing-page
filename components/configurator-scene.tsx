@@ -3,6 +3,7 @@
 import {
   Center,
   ContactShadows,
+  Html,
   OrbitControls,
   useGLTF,
 } from '@react-three/drei';
@@ -242,6 +243,11 @@ export function ConfiguratorScene(props: ConfiguratorSceneProps) {
       className="absolute inset-0 h-full w-full touch-none overscroll-contain"
     >
       <Canvas
+        fallback={
+          <p className="grid h-full place-items-center p-8 text-center text-white">
+            3D unavailable · নিচে আপনার পছন্দ বেছে নিন
+          </p>
+        }
         aria-label={props.label ?? 'Interactive three-dimensional sofa preview'}
         shadows
         frameloop={visible && !reducedMotion ? 'always' : 'demand'}
@@ -267,7 +273,15 @@ export function ConfiguratorScene(props: ConfiguratorSceneProps) {
           intensity={1.4}
           color="#b3945e"
         />
-        <Suspense fallback={null}>
+        <Suspense
+          fallback={
+            <Html center>
+              <output className="whitespace-nowrap rounded bg-[#081d1c] px-4 py-3 text-sm text-white">
+                Loading 3D · ৩ডি লোড হচ্ছে…
+              </output>
+            </Html>
+          }
+        >
           <ImportedSofa
             widthScale={props.widthScale}
             fabricColor={props.fabricColor}

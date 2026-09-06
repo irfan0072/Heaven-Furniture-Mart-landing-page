@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DesignStudio } from '@/components/design-studio';
+import { BrandFilm } from '@/components/brand-film';
 import { Experience } from '@/components/experience';
 import { FaqSection } from '@/components/faq-section';
 import { Hero } from '@/components/hero';
@@ -21,6 +22,7 @@ import { LanguageToggle, useLanguage } from '@/components/language-provider';
 import { MaterialLayers } from '@/components/material-layers';
 import { ReelsSection } from '@/components/reels-section';
 import { media, siteContent } from '@/lib/content';
+import { navigation } from '@/lib/navigation';
 
 const craftDetails = [
   {
@@ -57,7 +59,21 @@ function Eyebrow({
 export function LandingPage() {
   const [navVisible, setNavVisible] = useState(false);
   const [stickyMenuOpen, setStickyMenuOpen] = useState(false);
-  const { language, text } = useLanguage();
+  const { language, text, whatsapp } = useLanguage();
+  useEffect(() => {
+    if (!stickyMenuOpen) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setStickyMenuOpen(false);
+      document
+        .querySelector<HTMLButtonElement>(
+          '[aria-controls="sticky-mobile-menu"]',
+        )
+        ?.focus();
+    };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [stickyMenuOpen]);
 
   const collections = siteContent.collections.map((item, index) => ({
     ...item,
@@ -83,7 +99,7 @@ export function LandingPage() {
           'প্রিমিয়াম কাঠ ও উপকরণ',
           'দক্ষ নিজস্ব কারিগর',
           'আগ্রাবাদে বড় শোরুম',
-          'ডেলিভারি ও ইনস্টলেশন সহায়তা',
+          'ডেলিভারি ও ঘরে বসানো অন্তর্ভুক্ত',
           'সহজ পেমেন্ট সুবিধা',
           'শত শত সন্তুষ্ট বাড়ির মালিকের আস্থা',
         ]
@@ -188,6 +204,7 @@ export function LandingPage() {
 
         <div
           aria-hidden={!navVisible}
+          data-cinema-hide
           inert={!navVisible}
           className={`fixed inset-x-0 top-0 z-40 border-b border-white/10 bg-[var(--teal)]/96 text-white backdrop-blur-xl transition-all duration-500 ${navVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0'}`}
         >
@@ -199,15 +216,12 @@ export function LandingPage() {
               </span>
             </a>
             <nav
-              className="hidden items-center gap-7 text-[10px] font-bold uppercase tracking-[.14em] xl:flex"
+              className="hidden items-center gap-3 text-[10px] font-bold uppercase tracking-[.06em] xl:flex"
               aria-label="Sticky navigation"
             >
-              <a href="#about">{text('About', 'আমাদের সম্পর্কে')}</a>
-              <a href="#collections">{text('Collections', 'কালেকশন')}</a>
-              <a href="#reels">{text('Stories', 'গল্প')}</a>
-              <a href="#bespoke">{text('Bespoke', 'কাস্টম ডিজাইন')}</a>
-              <a href="#why-heaven">{text('Why Heaven', 'কেন হেভেন')}</a>
-              <a href="#showroom">{text('Showroom', 'শোরুম')}</a>
+              {navigation.map(({ href, en, bn }) => (
+                <a key={href} href={href} className="py-3">{text(en, bn)}</a>
+              ))}
             </nav>
             <div className="flex items-center gap-2">
               <LanguageToggle />
@@ -221,52 +235,76 @@ export function LandingPage() {
                     ? text('Close section menu', 'সেকশন মেনু বন্ধ করুন')
                     : text('Open section menu', 'সেকশন মেনু খুলুন')
                 }
-                className="grid size-10 place-items-center border border-white/20 xl:hidden"
+                className="relative grid size-11 place-items-center overflow-hidden border border-white/20 transition-colors duration-300 hover:border-white/50 xl:hidden"
               >
-                {stickyMenuOpen ? <X size={18} /> : <Menu size={18} />}
+                <Menu
+                  size={18}
+                  className={`absolute transition-all duration-300 ${stickyMenuOpen ? 'rotate-90 scale-50 opacity-0' : 'rotate-0 scale-100 opacity-100'}`}
+                />
+                <X
+                  size={18}
+                  className={`absolute transition-all duration-300 ${stickyMenuOpen ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-50 opacity-0'}`}
+                />
               </button>
               <a
-                href={siteContent.whatsapp}
+                href={whatsapp}
                 target="_blank"
                 rel="noreferrer"
                 className="hidden min-h-10 items-center gap-2 bg-[var(--ivory)] px-4 text-[10px] font-extrabold uppercase tracking-[.1em] text-[#102c2b] xl:inline-flex"
               >
-                {text('Quote', 'কোটেশন')} <ArrowUpRight size={14} />
+                {text('Chat on WhatsApp', 'WhatsApp-এ কথা বলুন')}{' '}
+                <ArrowUpRight size={14} />
               </a>
             </div>
           </div>
-          {stickyMenuOpen && (
+          <div
+            id="sticky-mobile-menu"
+            aria-hidden={!stickyMenuOpen}
+            inert={!stickyMenuOpen}
+            className={`grid overflow-hidden border-white/12 bg-[var(--teal-deep)] transition-[grid-template-rows,opacity,border-color] duration-300 ease-out xl:hidden ${stickyMenuOpen ? 'grid-rows-[1fr] border-t opacity-100' : 'pointer-events-none grid-rows-[0fr] border-transparent opacity-0'}`}
+          >
             <nav
-              id="sticky-mobile-menu"
-              className="grid border-t border-white/12 bg-[var(--teal-deep)] px-5 py-3 text-sm xl:hidden"
+              className="grid min-h-0 max-h-[calc(100svh-9rem)] overflow-y-auto px-5 text-sm"
               aria-label={text('Section navigation', 'সেকশন নেভিগেশন')}
             >
-              {[
-                [text('About', 'আমাদের সম্পর্কে'), '#about'],
-                [text('Collections', 'কালেকশন'), '#collections'],
-                [text('Stories', 'গল্প'), '#reels'],
-                [text('Design your sofa', 'সোফা ডিজাইন করুন'), '#bespoke'],
-                [text('Why Heaven', 'কেন হেভেন'), '#why-heaven'],
-                [text('Visit showroom', 'শোরুমে আসুন'), '#showroom'],
-                [text('Common questions', 'সাধারণ প্রশ্ন'), '#faq'],
-              ].map(([label, href]) => (
+              {navigation.map(({ href, en, bn }) => (
                 <a
                   key={href}
                   href={href}
                   onClick={() => setStickyMenuOpen(false)}
-                  className="flex min-h-12 items-center justify-between border-b border-white/10 last:border-0"
+                  className={`flex min-h-12 items-center justify-between border-b border-white/10 transition-[opacity,transform] duration-300 last:border-0 ${stickyMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'}`}
                 >
-                  {label}
+                  {text(en, bn)}
                   <ArrowUpRight size={14} />
                 </a>
               ))}
             </nav>
-          )}
+          </div>
         </div>
 
         <Hero />
 
         <main id="main-content" tabIndex={-1}>
+          <div className="border-b border-[var(--teal)]/15 bg-[var(--ivory)] px-5 py-6 sm:px-8 lg:px-14">
+            <ul className="mx-auto grid max-w-[1380px] gap-4 text-sm font-semibold sm:grid-cols-3">
+              {[
+                text(
+                  'Trusted by hundreds of homeowners',
+                  'শত শত বাড়ির মালিকের আস্থা',
+                ),
+                text('Visit our Agrabad showroom', 'আগ্রাবাদ শোরুমে এসে দেখুন'),
+                text(
+                  'Delivery & installation included',
+                  'ডেলিভারি ও ঘরে বসানো অন্তর্ভুক্ত',
+                ),
+              ].map((point) => (
+                <li key={point} className="flex items-center gap-3">
+                  <Check size={18} className="shrink-0" />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
           <section
             id="about"
             className="relative bg-[var(--ivory)] px-5 py-16 sm:px-8 sm:py-24 lg:px-14 lg:py-36"
@@ -284,8 +322,8 @@ export function LandingPage() {
                 </h2>
                 <p className="mt-9 max-w-xl text-base leading-8 text-[var(--brown)]/74">
                   {text(
-                    'Heaven Furniture Mart is one of Chattogram’s leading bespoke furniture brands. Since 2020, we have designed and crafted premium furniture around the people and spaces it belongs to—not around the limits of mass production.',
-                    'হেভেন ফার্নিচার মার্ট চট্টগ্রামের অন্যতম শীর্ষ কাস্টম ফার্নিচার ব্র্যান্ড। ২০২০ সাল থেকে আমরা গণ-উৎপাদনের সীমা নয়, মানুষ ও তার জায়গাকে কেন্দ্র করে প্রিমিয়াম আসবাব ডিজাইন ও তৈরি করছি।',
+                    'Since 2020, Heaven Furniture Mart has crafted custom furniture and styled interiors in Chattogram. From a sofa to an entire room, we work around your space, taste and everyday life.',
+                    '২০২০ সাল থেকে চট্টগ্রামে পছন্দমতো আসবাব তৈরি ও ঘর সাজানোর কাজ করছে হেভেন ফার্নিচার মার্ট। একটি সোফা থেকে পুরো ঘর—আপনার মাপ, রুচি ও দৈনন্দিন প্রয়োজন অনুযায়ী আমরা কাজ করি।',
                   )}
                 </p>
               </div>
@@ -306,6 +344,8 @@ export function LandingPage() {
               </figure>
             </div>
           </section>
+
+          <BrandFilm />
 
           <section
             id="collections"
@@ -388,11 +428,11 @@ export function LandingPage() {
             </div>
           </section>
 
-          <ReelsSection />
-
           <DesignStudio />
 
           <MaterialLayers />
+
+          <ReelsSection />
 
           <section
             id="why-heaven"
@@ -469,8 +509,13 @@ export function LandingPage() {
                 data-image
               >
                 <img
-                  src={media.founder.src}
-                  alt={media.founder.alt}
+                  src="/media/founder-abul-kalam-bhuiyan.jpg"
+                  alt={text(
+                    'Abul Kalam Bhuiyan, founder and Managing Director of Heaven Furniture Mart',
+                    'আবুল কালাম ভূঁইয়া, হেভেন ফার্নিচার মার্টের প্রতিষ্ঠাতা ও ব্যবস্থাপনা পরিচালক',
+                  )}
+                  width={1536}
+                  height={1239}
                   loading="lazy"
                   decoding="async"
                   className="absolute inset-0 h-full w-full object-cover"
@@ -485,7 +530,7 @@ export function LandingPage() {
                   strokeWidth={1.2}
                   className="mb-9 text-[var(--brass)]"
                 />
-                <p className="font-editorial text-[clamp(2.2rem,3.5vw,4.4rem)] leading-[1.03] tracking-[-.025em]">
+                <p className="font-editorial text-[clamp(1.8rem,2.5vw,3rem)] leading-[1.2] tracking-[-.025em]">
                   {text(
                     '“At Heaven Furniture Mart, we believe furniture is more than just function; it is a reflection of lifestyle, taste, and comfort. Every piece we create is designed to bring lasting elegance into the homes of our clients.”',
                     '“হেভেন ফার্নিচার মার্টে আমরা বিশ্বাস করি, আসবাব শুধু ব্যবহারিক বস্তু নয়; এটি জীবনধারা, রুচি ও আরামের প্রতিফলন। আমাদের প্রতিটি সৃষ্টি গ্রাহকের ঘরে দীর্ঘস্থায়ী সৌন্দর্য নিয়ে আসার জন্য ডিজাইন করা।”',
@@ -493,7 +538,7 @@ export function LandingPage() {
                 </p>
                 <footer className="mt-10 border-t border-white/15 pt-6 text-xs uppercase tracking-[.14em] text-white/65">
                   <strong className="block text-white">
-                    Abul Kalam Bhuiyan
+                    {text('Abul Kalam Bhuiyan', 'আবুল কালাম ভূঁইয়া')}
                   </strong>
                   {text('Managing Director', 'ব্যবস্থাপনা পরিচালক')}
                 </footer>
@@ -638,12 +683,14 @@ export function LandingPage() {
                   </div>
                 </div>
                 <figure
-                  className="relative min-h-[420px] overflow-hidden sm:min-h-[620px]"
+                  className="relative aspect-[4/3] self-center overflow-hidden"
                   data-image
                 >
                   <img
                     src={media.showroom.src}
                     alt={media.showroom.alt}
+                    width={1448}
+                    height={1086}
                     loading="lazy"
                     decoding="async"
                     className="absolute inset-0 h-full w-full object-cover"
@@ -686,15 +733,12 @@ export function LandingPage() {
                 </p>
                 <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
                   <a
-                    href={siteContent.whatsapp}
+                    href={whatsapp}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex min-h-14 items-center justify-center gap-3 bg-[var(--ivory)] px-7 text-xs font-extrabold uppercase tracking-[.12em] text-[#102c2b]"
                   >
-                    {text(
-                      'Request a Quote on WhatsApp',
-                      'WhatsApp-এ কোটেশন নিন',
-                    )}{' '}
+                    {text('Chat on WhatsApp', 'WhatsApp-এ কথা বলুন')}{' '}
                     <MessageCircle size={17} />
                   </a>
                   <a
@@ -801,7 +845,10 @@ export function LandingPage() {
 
         {navVisible && (
           <>
-            <div className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 gap-2 border-t border-[var(--teal)]/10 bg-[var(--ivory)]/96 p-2 pb-[max(.5rem,env(safe-area-inset-bottom))] shadow-[0_-10px_35px_rgba(0,0,0,.12)] backdrop-blur-xl md:hidden">
+            <div
+              data-cinema-hide
+              className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 gap-2 border-t border-[var(--teal)]/10 bg-[var(--ivory)]/96 p-2 pb-[max(.5rem,env(safe-area-inset-bottom))] shadow-[0_-10px_35px_rgba(0,0,0,.12)] backdrop-blur-xl md:hidden"
+            >
               <a
                 href="tel:+8801960481983"
                 className="inline-flex min-h-12 items-center justify-center gap-2 border border-[var(--teal)]/15 text-sm font-bold text-[var(--teal)]"
@@ -809,7 +856,7 @@ export function LandingPage() {
                 <Phone size={17} /> {text('Call us', 'ফোন করুন')}
               </a>
               <a
-                href={siteContent.whatsapp}
+                href={whatsapp}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#1f7a50] text-sm font-bold text-white"
@@ -818,13 +865,14 @@ export function LandingPage() {
               </a>
             </div>
             <a
-              href={siteContent.whatsapp}
+              href={whatsapp}
               target="_blank"
               rel="noreferrer"
               aria-label={text(
                 'Chat with Heaven Furniture Mart on WhatsApp',
                 'WhatsApp-এ হেভেন ফার্নিচার মার্টের সঙ্গে কথা বলুন',
               )}
+              data-cinema-hide
               className="group fixed bottom-6 right-6 z-50 hidden min-h-14 items-center gap-3 rounded-full bg-[#1f7a50] px-5 text-sm font-bold text-white shadow-[0_16px_45px_rgba(13,64,42,.35)] transition duration-300 hover:-translate-y-1 hover:bg-[#176640] md:inline-flex"
             >
               <span className="grid size-8 place-items-center rounded-full bg-white/12">

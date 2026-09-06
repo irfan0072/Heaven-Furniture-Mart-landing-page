@@ -63,7 +63,7 @@ export const siteContent = {
     'Premium wood and materials',
     'Skilled in-house craftsmanship',
     'Large physical showroom in Agrabad',
-    'Delivery and installation support',
+    'Delivery and installation included',
     'Easy payment options',
     'Trusted by hundreds of happy homeowners',
   ],
@@ -92,8 +92,8 @@ export const media = {
     alt: 'Editorial furniture detail in warm natural materials',
   },
   showroom: {
-    src: '/media/living-room.webp',
-    alt: 'Editorial luxury living room interior',
+    src: '/media/heaven-showroom-visit-v2.webp',
+    alt: 'Heaven Furniture Mart showroom exterior in Agrabad, Chattogram',
   },
   closing: {
     src: '/media/dining.webp',

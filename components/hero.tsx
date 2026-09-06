@@ -1,13 +1,25 @@
 'use client';
 
 import { ArrowDown, ArrowUpRight, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LanguageToggle, useLanguage } from '@/components/language-provider';
-import { siteContent } from '@/lib/content';
+import { navigation } from '@/lib/navigation';
 
 export function Hero() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { text } = useLanguage();
+  const { text, whatsapp } = useLanguage();
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setMenuOpen(false);
+      document
+        .querySelector<HTMLButtonElement>('[aria-controls="mobile-navigation"]')
+        ?.focus();
+    };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [menuOpen]);
 
   return (
     <section
@@ -27,70 +39,62 @@ export function Hero() {
           </span>
         </a>
         <nav
-          className="hidden items-center gap-7 text-xs font-semibold uppercase tracking-[.13em] text-[var(--stone)] lg:flex"
+          className="hidden items-center gap-3 text-[10px] font-semibold uppercase tracking-[.06em] text-[var(--stone)] xl:flex"
           aria-label="Primary navigation"
         >
-          <a href="#about" className="transition-colors hover:text-white">
-            {text('About', 'আমাদের সম্পর্কে')}
-          </a>
-          <a href="#collections" className="transition-colors hover:text-white">
-            {text('Collections', 'কালেকশন')}
-          </a>
-          <a href="#reels" className="transition-colors hover:text-white">
-            {text('Stories', 'গল্প')}
-          </a>
-          <a href="#bespoke" className="transition-colors hover:text-white">
-            {text('Design Studio', 'ডিজাইন স্টুডিও')}
-          </a>
-          <a href="#showroom" className="transition-colors hover:text-white">
-            {text('Showroom', 'শোরুম')}
-          </a>
+          {navigation.map(({ href, en, bn }) => (
+            <a key={href} href={href} className="py-3 transition-colors hover:text-white">{text(en, bn)}</a>
+          ))}
         </nav>
         <div className="flex items-center gap-2">
           <LanguageToggle />
           <a
-            href={siteContent.whatsapp}
+            href={whatsapp}
             target="_blank"
             rel="noreferrer"
             className="hidden min-h-11 items-center gap-2 bg-[var(--ivory)] px-5 text-xs font-extrabold uppercase tracking-[.1em] text-[var(--teal)] transition hover:bg-[var(--brass)] xl:inline-flex"
           >
-            {text('Request a quote', 'কোটেশন নিন')} <ArrowUpRight size={15} />
+            {text('Chat on WhatsApp', 'WhatsApp-এ কথা বলুন')}{' '}
+            <ArrowUpRight size={15} />
           </a>
           <button
-            className="grid size-11 place-items-center border border-white/25 lg:hidden"
+            className="relative grid size-11 place-items-center overflow-hidden border border-white/25 transition-colors duration-300 hover:border-white/55 xl:hidden"
             aria-label={
-              menuOpen ? 'Close navigation menu' : 'Open navigation menu'
+              menuOpen
+                ? text('Close navigation menu', 'মেনু বন্ধ করুন')
+                : text('Open navigation menu', 'মেনু খুলুন')
             }
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((open) => !open)}
           >
-            {menuOpen ? <X size={19} /> : <Menu size={19} />}
+            <Menu
+              size={19}
+              className={`absolute transition-all duration-300 ${menuOpen ? 'rotate-90 scale-50 opacity-0' : 'rotate-0 scale-100 opacity-100'}`}
+            />
+            <X
+              size={19}
+              className={`absolute transition-all duration-300 ${menuOpen ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-50 opacity-0'}`}
+            />
           </button>
         </div>
       </header>
 
       <div
         id="mobile-navigation"
-        hidden={!menuOpen}
-        className="absolute inset-x-3 top-[84px] z-50 border border-white/15 bg-[#061313]/98 px-5 py-5 shadow-2xl backdrop-blur-xl sm:inset-x-6 sm:top-[100px] lg:hidden"
+        aria-hidden={!menuOpen}
+        inert={!menuOpen}
+        className={`absolute inset-x-3 top-[84px] z-50 max-h-[calc(100svh-100px)] origin-top overflow-y-auto border border-white/15 bg-[#061313]/98 px-5 py-5 shadow-2xl backdrop-blur-xl transition-[opacity,transform] duration-300 ease-out sm:inset-x-6 sm:top-[100px] xl:hidden ${menuOpen ? 'translate-y-0 scale-y-100 opacity-100' : 'pointer-events-none -translate-y-3 scale-y-95 opacity-0'}`}
       >
         <nav className="grid text-sm" aria-label="Mobile navigation">
-          {[
-            [text('About', 'আমাদের সম্পর্কে'), '#about'],
-            [text('Collections', 'কালেকশন'), '#collections'],
-            [text('Stories', 'গল্প'), '#reels'],
-            [text('Design Studio', 'ডিজাইন স্টুডিও'), '#bespoke'],
-            [text('Why Heaven', 'কেন হেভেন'), '#why-heaven'],
-            [text('Showroom', 'শোরুম'), '#showroom'],
-          ].map(([label, href]) => (
+          {navigation.map(({ href, en, bn }) => (
             <a
               key={href}
               href={href}
               onClick={() => setMenuOpen(false)}
-              className="flex min-h-12 items-center justify-between border-b border-white/10 last:border-0"
+              className={`flex min-h-12 items-center justify-between border-b border-white/10 transition-[opacity,transform] duration-300 last:border-0 ${menuOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'}`}
             >
-              {label}
+              {text(en, bn)}
               <ArrowUpRight size={14} />
             </a>
           ))}
@@ -156,34 +160,36 @@ export function Hero() {
 
             <p className="hero-summary mt-6 max-w-xl text-sm leading-6 text-white/72 sm:text-base sm:leading-7">
               {text(
-                'Bespoke furniture, measured for your room and crafted around your taste.',
-                'আপনার ঘরের মাপ ও রুচি অনুযায়ী তৈরি কাস্টম আসবাব।',
+                'Custom sofas, beds and dining sets, crafted for your space in Chattogram. Start with a free design consultation.',
+                'চট্টগ্রামে আপনার ঘরের মাপে তৈরি সোফা, খাট ও ডাইনিং সেট। শুরু করুন বিনামূল্যে ডিজাইন পরামর্শ দিয়ে।',
               )}
             </p>
 
-            <div className="hero-actions mt-7 grid grid-cols-2 gap-2 sm:flex sm:gap-3">
+            <div className="hero-actions mt-7 flex flex-wrap items-center gap-4">
               <a
-                href="#bespoke"
+                href={whatsapp}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex min-h-13 items-center justify-center gap-2 bg-[var(--ivory)] px-4 text-center text-[10px] font-extrabold uppercase tracking-[.09em] text-[#102c2b] transition-transform hover:-translate-y-1 sm:min-h-14 sm:px-6 sm:text-xs"
               >
-                {text('Design a sofa', 'সোফা ডিজাইন করুন')}
+                {text('Chat on WhatsApp', 'WhatsApp-এ কথা বলুন')}
                 <ArrowUpRight size={15} />
               </a>
               <a
                 href="#collections"
-                className="inline-flex min-h-13 items-center justify-center border border-white/25 bg-black/10 px-4 text-center text-[10px] font-bold uppercase tracking-[.1em] text-white backdrop-blur-md transition hover:bg-white/10 sm:min-h-14 sm:px-6 sm:text-xs"
+                className="inline-flex min-h-11 items-center justify-center text-sm font-semibold text-white underline decoration-white/40 underline-offset-4"
               >
                 {text('View collection', 'কালেকশন দেখুন')}
               </a>
             </div>
 
-            <div className="hero-proof mt-7 grid grid-cols-3 border-t border-white/18 pt-4 text-[8px] font-bold uppercase leading-4 tracking-[.11em] text-white/66 sm:text-[9px]">
-              <span>{text('Made to measure', 'মাপ অনুযায়ী')}</span>
+            <div className="hero-proof mt-7 grid grid-cols-3 gap-2 border-t border-white/18 pt-4 text-xs font-semibold leading-5 text-white/85">
+              <span>{text('Free consultation', 'বিনামূল্যে পরামর্শ')}</span>
               <span className="border-l border-white/16 pl-3">
-                {text('Material guidance', 'উপকরণ পরামর্শ')}
+                {text('Agrabad showroom', 'আগ্রাবাদ শোরুম')}
               </span>
               <span className="border-l border-white/16 pl-3">
-                {text('Installation support', 'ইনস্টলেশন সহায়তা')}
+                {text('Delivery included', 'ডেলিভারি অন্তর্ভুক্ত')}
               </span>
             </div>
           </div>

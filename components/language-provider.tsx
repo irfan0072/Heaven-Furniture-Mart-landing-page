@@ -8,6 +8,7 @@ type LanguageContextValue = {
   language: Language;
   setLanguage: (language: Language) => void;
   text: (english: string, bangla: string) => string;
+  whatsapp: string;
 };
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
@@ -57,6 +58,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     () => ({
       language,
       setLanguage,
+      whatsapp: `https://wa.me/8801960481983?text=${encodeURIComponent(language === 'bn' ? 'হ্যালো হেভেন ফার্নিচার মার্ট, আমি আমার ঘরের জন্য আসবাব তৈরি করতে চাই। বিনামূল্যে ডিজাইন পরামর্শ ও দাম জানতে চাই।' : 'Hello Heaven Furniture Mart, I would like custom furniture for my space. Please help me with a free design consultation and a quote.')}`,
       text: (english: string, bangla: string) =>
         language === 'bn' ? bangla : english,
     }),

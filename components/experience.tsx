@@ -26,6 +26,13 @@ export function Experience({ children }: { children: React.ReactNode }) {
         anchors: true,
       });
       const onTick = (time: number) => lenis.raf(time * 1000);
+      const onFilmContinue = (event: Event) => {
+        const collection = document.getElementById('collections');
+        if (!collection) return;
+        event.preventDefault();
+        lenis.scrollTo(collection, { duration: 1.3 });
+      };
+      window.addEventListener('heaven:film-continue', onFilmContinue);
       lenis.on('scroll', () => ScrollTrigger.update());
       gsap.ticker.add(onTick);
       gsap.ticker.lagSmoothing(0);
@@ -78,14 +85,15 @@ export function Experience({ children }: { children: React.ReactNode }) {
           },
         });
 
-        gsap
-          .matchMedia()
-          .add(
-            '(min-width: 1024px) and (min-height: 900px) and (prefers-reduced-motion: no-preference)',
-            () => {
-              gsap.utils
-                .toArray<HTMLElement>('[data-material-story]')
-                .forEach((story) => {
+        gsap.matchMedia().add({
+          tablet: '(min-width: 768px) and (max-width: 1023px)',
+          desktop: '(min-width: 1024px) and (min-height: 700px)',
+          shortDesktop: '(min-width: 1024px) and (max-height: 699px)',
+        }, (mediaContext) => {
+        const isPinnedMaterialStory = Boolean(mediaContext.conditions?.desktop);
+        gsap.utils
+          .toArray<HTMLElement>('[data-material-story]')
+          .forEach((story) => {
                   const stage =
                     story.querySelector<HTMLElement>('[data-layer-stage]');
                   const shells = gsap.utils
@@ -123,9 +131,9 @@ export function Experience({ children }: { children: React.ReactNode }) {
 
                   const materialTimeline = gsap.timeline({
                     scrollTrigger: {
-                      trigger: story,
-                      start: 'top top',
-                      end: 'bottom bottom',
+                      trigger: isPinnedMaterialStory ? story : stage,
+                      start: isPinnedMaterialStory ? 'top top' : 'top 88%',
+                      end: isPinnedMaterialStory ? 'bottom bottom' : 'bottom 16%',
                       scrub: 0.65,
                     },
                   });
@@ -174,8 +182,7 @@ export function Experience({ children }: { children: React.ReactNode }) {
                     3.35,
                   );
                 });
-            },
-          );
+        });
 
         gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((element) => {
           gsap.fromTo(
@@ -224,6 +231,7 @@ export function Experience({ children }: { children: React.ReactNode }) {
       });
 
       teardown = () => {
+        window.removeEventListener('heaven:film-continue', onFilmContinue);
         context.revert();
         gsap.ticker.remove(onTick);
         lenis.destroy();

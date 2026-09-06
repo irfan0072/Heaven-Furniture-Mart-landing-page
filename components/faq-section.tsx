@@ -2,10 +2,9 @@
 
 import { ArrowUpRight, MessageCircle, Phone, Plus } from 'lucide-react';
 import { useLanguage } from '@/components/language-provider';
-import { siteContent } from '@/lib/content';
 
 export function FaqSection() {
-  const { language, text } = useLanguage();
+  const { language, text, whatsapp } = useLanguage();
   const questions =
     language === 'bn'
       ? [
@@ -23,7 +22,7 @@ export function FaqSection() {
           ],
           [
             'ডেলিভারি ও ইনস্টলেশন কি পাওয়া যায়?',
-            'ডেলিভারি ও ইনস্টলেশন সহায়তা পাওয়া যায়। আপনার চূড়ান্ত কোটেশনে প্রযোজ্য খরচ ও বিস্তারিত পরিষ্কারভাবে উল্লেখ করা হবে।',
+            'ডেলিভারি ও ঘরে আসবাব বসানো অন্তর্ভুক্ত। অর্ডার নিশ্চিত করার আগে আপনার ঠিকানা ও ডেলিভারির সময় আমাদের টিমের সঙ্গে ঠিক করে নিন।',
           ],
           [
             'কাপড় ও কাঠ সরাসরি দেখে বেছে নেওয়া যাবে?',
@@ -45,7 +44,7 @@ export function FaqSection() {
           ],
           [
             'Are delivery and installation available?',
-            'Delivery and installation support is available. Applicable costs and details are stated clearly in your final quotation.',
+            'Delivery and installation are included. Confirm your address and delivery arrangements with our team before finalizing your order.',
           ],
           [
             'Can I see fabrics and wood finishes in person?',
@@ -100,7 +99,7 @@ export function FaqSection() {
           </ol>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
             <a
-              href={siteContent.whatsapp}
+              href={whatsapp}
               target="_blank"
               rel="noreferrer"
               className="inline-flex min-h-13 items-center justify-center gap-3 bg-[#1f7a50] px-5 text-sm font-bold text-white"
@@ -140,7 +139,7 @@ export function FaqSection() {
             </details>
           ))}
           <a
-            href={siteContent.whatsapp}
+            href={whatsapp}
             target="_blank"
             rel="noreferrer"
             className="mt-7 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.12em]"

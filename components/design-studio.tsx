@@ -12,7 +12,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Component, useState, type ReactNode } from 'react';
 import { useLanguage } from '@/components/language-provider';
 import { siteContent } from '@/lib/content';
 
@@ -21,8 +21,28 @@ const ConfiguratorScene = dynamic(
     import('@/components/configurator-scene').then(
       (mod) => mod.ConfiguratorScene,
     ),
-  { ssr: false },
+  {
+    ssr: false,
+    loading: () => (
+      <output className="absolute inset-0 grid place-items-center text-sm text-white">
+        Loading 3D · ৩ডি লোড হচ্ছে…
+      </output>
+    ),
+  },
 );
+
+class PreviewBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
 
 const fabrics = [
   { name: 'Ivory Bouclé', color: '#ded5c6', premium: 12000 },
@@ -54,7 +74,6 @@ export function DesignStudio() {
   const [sceneReady, setSceneReady] = useState(false);
   const [cameraDistance, setCameraDistance] = useState(6.2);
   const [viewReset, setViewReset] = useState(0);
-  const sceneHost = useRef<HTMLDivElement>(null);
   const { language, text } = useLanguage();
 
   const fabric = fabrics[fabricIndex];
@@ -107,24 +126,6 @@ export function DesignStudio() {
         ]
       : siteContent.process;
 
-  useEffect(() => {
-    if (!sceneHost.current || !('IntersectionObserver' in window)) {
-      setSceneReady(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setSceneReady(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '500px 0px' },
-    );
-    observer.observe(sceneHost.current);
-    return () => observer.disconnect();
-  }, []);
-
   const copySummary = async () => {
     try {
       await navigator.clipboard.writeText(summary);
@@ -157,103 +158,125 @@ export function DesignStudio() {
           </div>
           <p className="max-w-xl text-base leading-8 text-white/68" data-reveal>
             {text(
-              'Explore an artisan-built sofa in 360°, check its proportion, and save size, comfort, and finish preferences in a clear brief for our craftsmen.',
-              'কারুকার্যময় সোফাটি ৩৬০° ঘুরিয়ে দেখুন, অনুপাত যাচাই করুন এবং মাপ, আরাম ও ফিনিশের পছন্দ আমাদের কারিগরদের জন্য একটি পরিষ্কার ব্রিফে সংরক্ষণ করুন।',
+              'Choose your size, colour and comfort, then send your preferences on WhatsApp. You can also open the 3D sample to explore the shape.',
+              'মাপ, রঙ ও আরাম বেছে নিয়ে WhatsApp-এ আপনার পছন্দ পাঠান। চাইলে ৩ডি নমুনাটি খুলে ঘুরিয়েও দেখতে পারেন।',
             )}
           </p>
         </div>
 
         <div className="grid overflow-hidden border border-white/12 bg-[#0d2524] shadow-[0_35px_100px_rgba(0,0,0,.25)] lg:grid-cols-[1.25fr_.75fr]">
-          <div
-            ref={sceneHost}
-            className="relative min-h-[430px] overflow-hidden border-b border-white/10 sm:min-h-[560px] md:min-h-[620px] lg:min-h-[720px] lg:border-b-0 lg:border-r"
-          >
-            <div className="absolute left-3 top-3 z-10 flex min-h-11 items-center gap-2 rounded-full border border-white/12 bg-black/25 px-3 text-xs text-white/78 backdrop-blur-md sm:left-5 sm:top-5 sm:px-4">
-              <Move3D size={15} />{' '}
-              <span className="hidden min-[520px]:inline">
-                {text(
-                  'Drag to rotate · Scroll or pinch to zoom',
-                  'ঘোরাতে ড্র্যাগ · স্ক্রল বা পিঞ্চ করে জুম',
-                )}
-              </span>
-            </div>
-            <div className="absolute right-3 top-3 z-20 flex overflow-hidden rounded-full border border-white/14 bg-black/35 text-white backdrop-blur-md sm:right-5 sm:top-5">
-              <button
-                type="button"
-                onClick={() =>
-                  setCameraDistance((value) => Math.max(4.4, value - 0.65))
-                }
-                className="grid size-11 place-items-center border-r border-white/12 transition hover:bg-white/10"
-                aria-label={text('Zoom in on sofa', 'সোফা জুম ইন করুন')}
-                title={text('Zoom in', 'জুম ইন')}
-              >
-                <ZoomIn size={17} />
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  setCameraDistance((value) => Math.min(8.4, value + 0.65))
-                }
-                className="grid size-11 place-items-center border-r border-white/12 transition hover:bg-white/10"
-                aria-label={text('Zoom out from sofa', 'সোফা জুম আউট করুন')}
-                title={text('Zoom out', 'জুম আউট')}
-              >
-                <ZoomOut size={17} />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setCameraDistance(6.2);
-                  setViewReset((value) => value + 1);
-                }}
-                className="grid size-11 place-items-center transition hover:bg-white/10"
-                aria-label={text('Reset sofa view', 'সোফার ভিউ রিসেট করুন')}
-                title={text('Reset view', 'ভিউ রিসেট')}
-              >
-                <RotateCcw size={17} />
-              </button>
-            </div>
-            <div className="pointer-events-none absolute inset-x-5 bottom-5 z-10 flex items-end justify-between gap-4">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[var(--brass)]">
+          <div className="relative min-h-[430px] overflow-hidden border-b border-white/10 sm:min-h-[560px] md:min-h-[620px] lg:min-h-[720px] lg:border-b-0 lg:border-r">
+            {sceneReady && (
+              <div className="absolute left-3 top-3 z-10 flex min-h-11 items-center gap-2 rounded-full border border-white/12 bg-black/25 px-3 text-xs text-white/78 backdrop-blur-md sm:left-5 sm:top-5 sm:px-4">
+                <Move3D size={15} />{' '}
+                <span className="hidden min-[520px]:inline">
                   {text(
-                    'Interactive 3D size preview',
-                    'ইন্টারঅ্যাক্টিভ ৩ডি সাইজ প্রিভিউ',
+                    'Drag to rotate · Scroll or pinch to zoom',
+                    'ঘোরাতে ড্র্যাগ · স্ক্রল বা পিঞ্চ করে জুম',
                   )}
-                </p>
-                <p className="mt-1 max-w-xs text-xs leading-5 text-white/50">
-                  {text(
-                    'Preview colours and proportion here, then confirm the final finish against physical samples before production.',
-                    'এখানে রঙ ও অনুপাত প্রিভিউ করুন, তারপর তৈরির আগে সরাসরি ম্যাটেরিয়াল স্যাম্পলের সাথে চূড়ান্ত ফিনিশ নিশ্চিত করুন।',
-                  )}
-                </p>
+                </span>
               </div>
-              <span className="hidden rounded-full border border-white/12 bg-black/20 px-3 py-2 text-[10px] uppercase tracking-[.14em] text-white/55 sm:block">
-                360°
-              </span>
-            </div>
+            )}
+            {sceneReady && (
+              <div className="absolute right-3 top-3 z-20 flex overflow-hidden rounded-full border border-white/14 bg-black/35 text-white backdrop-blur-md sm:right-5 sm:top-5">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCameraDistance((value) => Math.max(4.4, value - 0.65))
+                  }
+                  className="grid size-11 place-items-center border-r border-white/12 transition hover:bg-white/10"
+                  aria-label={text('Zoom in on sofa', 'সোফা জুম ইন করুন')}
+                  title={text('Zoom in', 'জুম ইন')}
+                >
+                  <ZoomIn size={17} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCameraDistance((value) => Math.min(8.4, value + 0.65))
+                  }
+                  className="grid size-11 place-items-center border-r border-white/12 transition hover:bg-white/10"
+                  aria-label={text('Zoom out from sofa', 'সোফা জুম আউট করুন')}
+                  title={text('Zoom out', 'জুম আউট')}
+                >
+                  <ZoomOut size={17} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCameraDistance(6.2);
+                    setViewReset((value) => value + 1);
+                  }}
+                  className="grid size-11 place-items-center transition hover:bg-white/10"
+                  aria-label={text('Reset sofa view', 'সোফার ভিউ রিসেট করুন')}
+                  title={text('Reset view', 'ভিউ রিসেট')}
+                >
+                  <RotateCcw size={17} />
+                </button>
+              </div>
+            )}
+            {sceneReady && (
+              <button
+                type="button"
+                onClick={() => setSceneReady(false)}
+                className="absolute bottom-5 right-5 z-20 min-h-11 rounded-full bg-[var(--ivory)] px-4 text-sm font-bold text-[var(--teal)]"
+              >
+                {text('Close 3D', '৩ডি বন্ধ করুন')}
+              </button>
+            )}
             {sceneReady ? (
-              <ConfiguratorScene
-                widthScale={1 + (width - 220) / 500}
-                fabricColor={fabric.color}
-                woodColor={wood.color}
-                cameraDistance={cameraDistance}
-                resetKey={viewReset}
-                label={text(
-                  'Interactive three-dimensional artisan sofa preview',
-                  'ইন্টারঅ্যাক্টিভ ত্রিমাত্রিক কারুকার্যময় সোফার প্রিভিউ',
-                )}
-              />
+              <PreviewBoundary
+                fallback={
+                  <output className="absolute inset-0 grid place-items-center p-8 text-center text-white">
+                    {text(
+                      '3D is unavailable here. You can still choose your preferences and send them below.',
+                      'এখানে ৩ডি দেখা যাচ্ছে না। নিচে আপনার পছন্দ বেছে নিয়ে পাঠাতে পারবেন।',
+                    )}
+                  </output>
+                }
+              >
+                <ConfiguratorScene
+                  widthScale={width / 220}
+                  fabricColor={fabric.color}
+                  woodColor={wood.color}
+                  cameraDistance={cameraDistance}
+                  resetKey={viewReset}
+                  label={text(
+                    'Interactive three-dimensional artisan sofa preview',
+                    'ইন্টারঅ্যাক্টিভ ত্রিমাত্রিক কারুকার্যময় সোফার প্রিভিউ',
+                  )}
+                />
+              </PreviewBoundary>
             ) : (
-              <div className="grid h-full min-h-[430px] place-items-center text-center text-white/55 sm:min-h-[560px] md:min-h-[620px] lg:min-h-[720px]">
-                <div>
+              <div className="relative grid h-full min-h-[430px] place-items-center text-center sm:min-h-[560px] md:min-h-[620px] lg:min-h-[720px]">
+                <img
+                  src="/media/heaven-living.webp"
+                  alt={text(
+                    'Heaven Furniture Mart sofa collection',
+                    'হেভেন ফার্নিচার মার্টের সোফা কালেকশন',
+                  )}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover opacity-45"
+                />
+                <div className="relative z-10 -translate-y-10 rounded-xl bg-[#081d1c]/90 p-6">
                   <Sofa
                     className="mx-auto mb-3 text-[var(--brass)]"
                     size={28}
                     strokeWidth={1.25}
                   />
-                  <p className="text-xs uppercase tracking-[.15em]">
-                    {text('Preparing 3D preview', '৩ডি প্রিভিউ প্রস্তুত হচ্ছে')}
+                  <button
+                    type="button"
+                    onClick={() => setSceneReady(true)}
+                    className="min-h-12 rounded bg-[var(--ivory)] px-6 text-sm font-bold text-[var(--teal)]"
+                  >
+                    {text('Explore 3D sample', '৩ডি নমুনা দেখুন')}
+                  </button>
+                  <p className="mt-3 max-w-xs text-sm leading-6 text-white/85">
+                    {text(
+                      'Optional — choose your preferences below at any time.',
+                      'চাইলে দেখুন—নিচে যেকোনো সময় আপনার পছন্দ বেছে নিতে পারবেন।',
+                    )}
                   </p>
                 </div>
               </div>
@@ -261,6 +284,12 @@ export function DesignStudio() {
           </div>
 
           <div className="flex flex-col bg-[#f1ebe0] p-6 text-[var(--teal)] sm:p-9 lg:p-10">
+            <p className="mb-5 text-sm leading-7 text-[var(--brown)]/85">
+              {text(
+                'The 3D model is a sample. Confirm your final design and colours with our material samples.',
+                '৩ডি মডেলটি একটি নমুনা। উপকরণ সরাসরি দেখে চূড়ান্ত ডিজাইন ও রঙ নিশ্চিত করুন।',
+              )}
+            </p>
             <div className="flex items-center justify-between border-b border-[var(--teal)]/12 pb-6">
               <div>
                 <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[var(--brown)]/55">
