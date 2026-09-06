@@ -83,7 +83,7 @@ export function LanguageToggle() {
   const { language, setLanguage } = useLanguage();
   return (
     <div
-      className="inline-flex shrink-0 border border-current/20 p-1 text-xs font-bold"
+      className="language-toggle inline-flex shrink-0 border border-current/20 font-bold"
       aria-label={language === 'bn' ? 'ভাষা বেছে নিন' : 'Choose language'}
     >
       <button
@@ -91,7 +91,7 @@ export function LanguageToggle() {
         lang="en"
         onClick={() => setLanguage('en')}
         aria-pressed={language === 'en'}
-        className={`min-h-11 min-w-11 px-2 ${language === 'en' ? 'bg-current' : ''}`}
+        className={language === 'en' ? 'bg-current' : ''}
       >
         <span className={language === 'en' ? 'text-[var(--teal)]' : ''}>
           EN
@@ -103,7 +103,7 @@ export function LanguageToggle() {
         style={{ fontFamily: 'var(--font-bengali), sans-serif' }}
         onClick={() => setLanguage('bn')}
         aria-pressed={language === 'bn'}
-        className={`min-h-11 min-w-11 px-2 ${language === 'bn' ? 'bg-current' : ''}`}
+        className={language === 'bn' ? 'bg-current' : ''}
       >
         <span className={language === 'bn' ? 'text-[var(--teal)]' : ''}>
           বাংলা

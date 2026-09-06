@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DesignStudio } from '@/components/design-studio';
+import { BrandLogo } from '@/components/brand-logo';
 import { BrandFilm } from '@/components/brand-film';
 import { Experience } from '@/components/experience';
 import { FaqSection } from '@/components/faq-section';
@@ -183,12 +184,10 @@ export function LandingPage() {
     <Experience>
       <div className="overflow-clip">
         <div className="welcome-preloader" aria-hidden="true">
-          <div className="welcome-preloader__mark" aria-hidden="true">
-            H
-          </div>
-          <p className="welcome-preloader__brand" aria-hidden="true">
-            Heaven <span>Furniture Mart</span>
-          </p>
+          <BrandLogo
+            size="large"
+            className="welcome-preloader__logo text-white"
+          />
           <p className="welcome-preloader__greeting" aria-hidden="true">
             Welcome · স্বাগতম
           </p>
@@ -209,11 +208,8 @@ export function LandingPage() {
           className={`fixed inset-x-0 top-0 z-40 border-b border-white/10 bg-[var(--teal)]/96 text-white backdrop-blur-xl transition-all duration-500 ${navVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0'}`}
         >
           <div className="mx-auto flex h-16 max-w-[1480px] items-center justify-between px-5 sm:px-8 lg:px-14">
-            <a href="#top" className="font-editorial text-xl font-semibold">
-              Heaven{' '}
-              <span className="hidden text-sm font-normal text-[var(--stone)] sm:inline">
-                Furniture Mart
-              </span>
+            <a href="#top" className="shrink-0 text-white">
+              <BrandLogo size="small" />
             </a>
             <nav
               className="hidden items-center gap-3 text-[10px] font-bold uppercase tracking-[.06em] xl:flex"
@@ -758,9 +754,7 @@ export function LandingPage() {
           <div className="mx-auto max-w-[1380px]">
             <div className="grid gap-12 border-b border-white/12 pb-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
               <div>
-                <div className="font-editorial text-4xl">
-                  Heaven Furniture Mart
-                </div>
+                <BrandLogo size="medium" className="text-white" />
                 <p className="mt-4 text-xs uppercase tracking-[.18em] text-[var(--stone)]">
                   {text(siteContent.tagline, 'ডিজাইনড। ক্রাফটেড। কাস্টমাইজড।')}
                 </p>

@@ -95,6 +95,67 @@ a {
 .font-editorial {
   font-family: var(--font-editorial), Georgia, serif;
 }
+.brand-logo {
+  --brand-logo-size: 2rem;
+  display: inline-flex;
+  width: max-content;
+  flex-direction: column;
+  align-items: center;
+  color: currentColor;
+  line-height: 1;
+}
+.brand-logo--small {
+  --brand-logo-size: clamp(1.15rem, 2.15vw, 1.55rem);
+}
+.brand-logo--medium {
+  --brand-logo-size: clamp(2rem, 3.5vw, 3.25rem);
+}
+.brand-logo--large {
+  --brand-logo-size: clamp(2.8rem, 8vw, 4.75rem);
+}
+.brand-logo__word {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: var(--brand-logo-size);
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  line-height: 0.76;
+}
+.brand-logo__letter-a {
+  width: 0.68em;
+  height: 0.86em;
+  margin-inline: -0.025em -0.005em;
+  flex: none;
+  overflow: visible;
+  color: var(--brass);
+}
+.brand-logo__descriptor {
+  margin-top: calc(var(--brand-logo-size) * 0.24);
+  padding-left: 0.16em;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: calc(var(--brand-logo-size) * 0.245);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.language-toggle {
+  padding: 2px;
+  font-size: 0.625rem;
+  line-height: 1;
+}
+.language-toggle button {
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding-inline: 0.4rem;
+}
+.language-toggle button[lang='bn'] {
+  min-width: 2.65rem;
+}
+.language-bn .language-toggle {
+  font-size: 0.625rem;
+}
 .grain::after {
   content: '';
   position: absolute;
@@ -222,37 +283,10 @@ a {
   position: relative;
   z-index: 1;
 }
-.welcome-preloader__mark {
-  display: grid;
-  width: 3.75rem;
-  height: 3.75rem;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--brass) 70%, transparent);
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: 2.35rem;
-  color: var(--brass);
+.welcome-preloader__logo {
   animation:
     welcome-mark 0.56s cubic-bezier(0.2, 0.75, 0.25, 1) both,
     welcome-content-out 0.24s 0.72s ease-in forwards;
-}
-.welcome-preloader__brand {
-  margin: 1.15rem 0 0;
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: clamp(1.7rem, 5vw, 2.3rem);
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  animation: welcome-content-out 0.24s 0.75s ease-in forwards;
-}
-.welcome-preloader__brand span {
-  display: block;
-  margin-top: 0.45rem;
-  text-align: center;
-  font-family: var(--font-sans), Arial, sans-serif;
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--stone);
 }
 .welcome-preloader__greeting {
   margin: 1.25rem 0 0;

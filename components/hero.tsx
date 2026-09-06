@@ -3,6 +3,7 @@
 import { ArrowDown, ArrowUpRight, Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { LanguageToggle, useLanguage } from '@/components/language-provider';
+import { BrandLogo } from '@/components/brand-logo';
 import { navigation } from '@/lib/navigation';
 
 export function Hero() {
@@ -31,12 +32,9 @@ export function Hero() {
       <header className="hero-header relative z-40 mx-3 mt-3 flex h-[70px] max-w-[1480px] items-center justify-between border border-white/18 bg-[#071b1a]/45 px-4 backdrop-blur-xl sm:mx-6 sm:mt-5 sm:px-6 lg:mx-auto lg:h-20 lg:px-8">
         <a
           href="#top"
-          className="font-editorial text-lg font-semibold leading-[.85] tracking-[-.02em] sm:text-2xl"
+          className="shrink-0 text-white"
         >
-          Heaven{' '}
-          <span className="block text-[11px] font-normal tracking-[.14em] text-[var(--stone)] sm:text-sm">
-            Furniture Mart
-          </span>
+          <BrandLogo size="small" />
         </a>
         <nav
           className="hidden items-center gap-3 text-[10px] font-semibold uppercase tracking-[.06em] text-[var(--stone)] xl:flex"
